@@ -85,11 +85,15 @@ def main():
     ###############
     # Load datasets
     ###############
+    columns_to_keep = ["messages", "chosen", "rejected", "prompt", "completion", "label"]
+    if data_args.text_column not in columns_to_keep:
+        columns_to_keep.append(data_args.text_column)
+
     raw_datasets = get_datasets(
         data_args,
         splits=data_args.dataset_splits,
         configs=data_args.dataset_configs,
-        columns_to_keep=["messages", "chosen", "rejected", "prompt", "completion", "label"],
+        columns_to_keep=columns_to_keep,
     )
     logger.info(
         f"Training on the following datasets and their proportions: {[split + ' : ' + str(dset.num_rows) for split, dset in raw_datasets.items()]}"
