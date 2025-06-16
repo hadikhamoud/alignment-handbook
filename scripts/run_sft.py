@@ -138,6 +138,8 @@ def main():
             "tokenizer": tokenizer,
             "task": "sft",
             "auto_insert_empty_system_msg": data_args.auto_insert_empty_system_msg,
+            "text_column": data_args.text_column,
+            "label_column": training_args.dataset_text_field,
         },
         num_proc=data_args.preprocessing_num_workers,
         remove_columns=column_names,
@@ -162,7 +164,9 @@ def main():
 
     with training_args.main_process_first(desc="Log a few random samples from the processed training set"):
         for index in random.sample(range(len(raw_datasets["train"])), 3):
-            logger.info(f"Sample {index} of the processed training set:\n\n{raw_datasets['train'][index]['text']}")
+            logger.info(
+                f"Sample {index} of the processed training set:\n\n{raw_datasets['train'][index][training_args.dataset_text_field]}"
+            )
 
     logger.info(f"Number of training examples: {len(train_dataset)}")
     logger.info(f"Number of evaluation examples: {len(eval_dataset)}")
@@ -176,7 +180,7 @@ def main():
         args=training_args,
         train_dataset=train_dataset,
         eval_dataset=eval_dataset,
-        dataset_text_field="text",
+        dataset_text_field=training_args.dataset_text_field,
         max_seq_length=training_args.max_seq_length,
         tokenizer=tokenizer,
         #packing=True,
