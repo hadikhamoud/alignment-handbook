@@ -78,6 +78,7 @@ def get_tokenizer(
     )
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token_id = tokenizer.eos_token_id
+    
 
     if data_args.truncation_side is not None:
         tokenizer.truncation_side = data_args.truncation_side
@@ -91,6 +92,8 @@ def get_tokenizer(
     elif auto_set_chat_template and tokenizer.get_chat_template() is None:
         tokenizer.chat_template = DEFAULT_CHAT_TEMPLATE
 
+    tokenizer.add_special_tokens({'additional_special_tokens': ['<+>']})
+    
     return tokenizer
 
 
